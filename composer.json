@@ -1,0 +1,23 @@
+{
+    "name": "izisaurio/openai",
+    "description": "A small Open AI API wrapper",
+    "type": "library",
+    "authors": [
+        {
+            "name": "izisaurio",
+            "email": "izi.isaac@gmail.com"
+        }
+    ],
+    "require": {
+        "izisaurio/lite-request": "^1.0"
+    },
+    "require-dev": {
+        "vlucas/phpdotenv": "^5.5",
+        "php-ffmpeg/php-ffmpeg": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Izisaurio\\OpenAI\\": "lib/"
+        }
+    }
+}
