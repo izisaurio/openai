@@ -15,12 +15,28 @@ class Chat extends OpenAITask
     private $endpoint = 'https://api.openai.com/v1/chat/completions';
 
     /**
-     * Transcription model
+     * Transcription default model
      * 
      * @access  private
      * @var     string
      */
-    private $model = 'gpt-3.5-turbo';
+    private $model = 'gpt-4o-mini';
+
+    /**
+     * Error storage
+     * 
+     * @access  public
+     * @var     string
+     */
+    public $error;
+
+    /**
+     * Response storage
+     * 
+     * @access  public
+     * @var     array
+     */
+    public $response = [];
 
     /**
      * Send a request to the OpenAI API
@@ -33,7 +49,7 @@ class Chat extends OpenAITask
     public function send(array $data)
     {
         if (!isset($data['messages'])) {
-            throw new OpenAIException('Messages key is required in the data array');
+            throw new OpenAIException('"messages" key is required in the data array');
         }
 
         if (!isset($data['model'])) {
@@ -47,7 +63,7 @@ class Chat extends OpenAITask
 
         $request->headers([
             'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . $this->apiKey,
+            'Authorization' => "Bearer {$this->apiKey}",
         ]);
 
         $request->postbody($data);
@@ -55,6 +71,17 @@ class Chat extends OpenAITask
         $response = $request->exec();
         $this->error = $response->error;
 
-        return $response->json();
+        $this->response =  $response->json();
+        return $this->response;
+    }
+
+    /**
+     * Return the response main message
+     * 
+     * @access  public
+     * @return  string
+     */
+    public function message() {
+        return $this->response['choices'][0]['message']['content'];
     }
 }

@@ -16,4 +16,6 @@ $response = $openai->send([
     ],
 ]);
 
-var_dump($response['choices'][0]['message']['content']);
+var_dump($response);
+
+var_dump($openai->message());
