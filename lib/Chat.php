@@ -80,8 +80,12 @@ class Chat extends OpenAITask
      * 
      * @access  public
      * @return  string
+     * @throws  OpenAIException
      */
     public function message() {
+        if (isset($this->response['error'])) {
+            throw new OpenAIException($this->response['error']['message']);
+        }
         return $this->response['choices'][0]['message']['content'];
     }
 }
