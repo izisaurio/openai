@@ -3,6 +3,7 @@
 namespace Izisaurio\OpenAI;
 
 use LiteRequest\Request,
+    LiteRequest\Response,
     \CURLFile;
 
 class Transcription extends OpenAITask
@@ -24,12 +25,20 @@ class Transcription extends OpenAITask
     private $model = 'whisper-1';
 
     /**
+     * Request response
+     * 
+     * @access  public
+     * @var     Response
+     */
+    public $response;
+
+    /**
      * Send a request to the OpenAI API
      * 
      * "file" key (audio file path) is required in the data array
      * 
      * @param   array  $data
-     * @return  array
+     * @return  Response
      */
     public function send(array $data)
     {
@@ -48,6 +57,7 @@ class Transcription extends OpenAITask
             CURLOPT_SSL_VERIFYHOST => false,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_POSTFIELDS => $data,
+            CURLOPT_RETURNTRANSFER => true,
         ]);
 
         $request->headers([
@@ -55,9 +65,19 @@ class Transcription extends OpenAITask
             'Authorization' => 'Bearer ' . $this->apiKey,
         ]);
 
-        $response = $request->exec();
-        $this->error = $response->error;
+        $this->response = $request->exec();
+        $this->error = $this->response->error;
 
-        return $response->json();
+        return $this->response;
+    }
+
+    /**
+     * Get srt transcription from the response
+     * 
+     * @access  public
+     * @return  string
+     */
+    public function srt() {
+        return $this->response->body;
     }
 }

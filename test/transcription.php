@@ -20,7 +20,9 @@ $audio->save($mp3, $tmpFile);
 $openai = new Transcription($_ENV['OPENAI']);
 
 $response = $openai->send([
+    'model' => 'whisper-1',
     'file' => $tmpFile,
+    'response_format' => 'srt',
 ]);
 
-var_dump($response);
+var_dump($openai->srt());
